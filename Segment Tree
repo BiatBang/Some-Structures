@@ -1,0 +1,67 @@
+public class SegmentTree{
+    private int[] stree;
+    private int[] nums;
+    
+    public SegmentTree(int[] nums){
+        this.nums = nums;
+        
+        int log2 = Math.ceil(Math.log(n) / Math.log(2));
+        int size = Math.pow(2, log2 + 1) - 1;
+        stree = new int[size];
+        
+        constructSTree(nums, 0, nums.length - 1, 0);
+    }
+    
+    public int constructSTree(int[] nums, int start, int end, int cur){
+        // in this array, left child index is 2*i+1, right child is 2*i+2
+        if(start = end){
+            st[cur] = nums[start];
+            return st[cur];
+        }
+        
+        int mid = (start + end) / 2;
+        int lpart = constructSTree(nums, start, mid, cur * 2 + 1);
+        int rpart = constructSTree(nums, mid + 1, end, cur * 2 + 2);
+        
+        st[cur] = lpart + rpart;
+        return st[cur];
+    }
+    
+    public int sumRange(int st, int end){
+        return sum(0, nums.length - 1, st, end, 0);
+    }
+    
+    public int sum(int ts, int te, int qs, int qe, int cur){
+        if(qs > te || qe < ts) return 0;
+        if(qs >= ts && qe <= te){
+            return st[cur];
+        }
+        
+        int mid = (ts + te) / 2;
+        int lpart = sum(ts, mid, qs, qe, 2 * cur + 1);
+        int rpart = sum(mid + 1, te, qs, qe, 2 * cur + 2);
+        return lpart + rpart;
+    }
+    
+    
+    public void update(int l, int var){
+        int diff = nums[l] - l;
+        // update nums here, update stree in util
+        nums[l] = var;
+        update(0, nums.length - 1, l, var, diff, 0);
+    }
+    
+    public void updateUtil(int qs, int qe, int l, int var, int diff, int cur){
+        if(l < qs || l > qe) return ;
+        st[cur] += diff;
+        
+        if(qs != qe){
+            int mid = (qs + qe) / 2;
+            updateUtil(qs, mid, l, var, diff, cur * 2 + 1);
+            updateUtil(mid + 1, qe, var, diff, cur * 2 + 2);
+        }
+        
+        return ;
+        
+    }
+}
