@@ -1,0 +1,31 @@
+// randomly pick k elements from n elements, 
+// so that each element has a k/n probability of being chosen
+
+// 1. create a reservoir of k, put first k's elements into the reservoir
+// 2. for i in k ... n-1 element one by one
+//    create a random number j between 0-k, if it belongs to [0, k-1], swap k[j] and elem[i]
+
+// proof:
+// for first k's elements:
+// p(picked first round) = 1, p(remained after k) = k/k+1, p(remained after k+1) = k+1/k+2, ...
+// p(remained at final) = 1*(k/k+1)*(k+1/k+2)...(n-1/n) = k/n
+// for elements from k:
+// p(remained after k) = k/k+1, p(remained after k+1) = k+1/k+2, ...
+// p(remained at final) = (k/k+1)*(k+1/k+2)*...*(n-1/n) = k/n
+
+public class ReservoirSampling{
+    public int[] rSampling(int[] nums, int k){
+        int[] res = new int[k];
+        
+        if(nums.length < k) return res;
+        for(int i = 0; i < k; i++) res[i] = nums[i];
+        if(nums.length == k) return res;
+        
+        for(int i = k; i < nums.length; i++){
+            int rand = (int)(Math.random()*i);
+            if(rand < k) res[rand] = nums[i];
+        }
+        
+        return res;
+    }
+}
