@@ -1,0 +1,6 @@
+// Josephus problem
+
+// n people sit in a circle, kill one by one, every other k-1, until only one survives.
+// kth dies first, then k+k(if exists)
+
+// solve by recursive
