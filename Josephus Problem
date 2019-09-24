@@ -4,3 +4,14 @@
 // kth dies first, then k+k(if exists)
 
 // solve by recursive
+
+// each time one is killed, start from last one, and remove the dead
+// J(n, k) = (J(n-1, k) + k-1) % n + 1
+// J(1, k) = 1
+
+public class JP {
+    public int josephus(int j, int k) {
+        if(j == 1) return 1;
+        return (josephus(j - 1, k) + k - 1) % n + 1;
+    }
+}
