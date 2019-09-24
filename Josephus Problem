@@ -11,6 +11,24 @@
 
 // https://medium.com/@rrfd/explaining-the-josephus-algorithm-11d0c02e7212
 // suppose I'm the last survivor in the last round, 
+// where should I be in last-2 round, can let me stand in this place in next round?
+// where should I be in last-3 round, can let me stand in that place in last-2 round?
+// ......
+// where should I be in first round, can let me stand in that place in 2nd round?
+// this is it. 
+// I don't know the # I'm. Just stand in a place, and wait to be 1st in the last round.
+
+// say k = 2
+// I -> survive
+// I, #2 -> where should I stand to survive? -> I, #2 -> 1
+// I, #2, #3 -> where? s.t. kill 3, remain I and #2? -> #2, #3, I -> 3
+// I, #2, #3, #4 -> where? s.t. kill 4, remain I, #2, #3? -> I, #4, #2, #3 -> 1
+// I, #2, #3, #4, #5 -> ...5, ...I, #2, #3, #4 -> #3, #5, I, #4, #2 -> 3
+// Basically, josephus(j, k) means the position I should stand to let me survive at last.
+// this is it, finally I survive. What's the rule?
+// Stand behind the dying man.
+// + k - 1, this man should be dead
+// + 1, first survive. 
 
 public class JP {
     public int josephus(int j, int k) {
