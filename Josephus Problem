@@ -9,6 +9,9 @@
 // J(n, k) = (J(n-1, k) + k-1) % n + 1
 // J(1, k) = 1
 
+// https://medium.com/@rrfd/explaining-the-josephus-algorithm-11d0c02e7212
+// suppose I'm the last survivor in the last round, 
+
 public class JP {
     public int josephus(int j, int k) {
         if(j == 1) return 1;
