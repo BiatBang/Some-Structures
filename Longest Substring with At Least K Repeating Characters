@@ -1,0 +1,38 @@
+// head scratching problem (395)
+
+// we need a very brute force method to solve this
+        // idea is a substring may have at most 26 different letters
+        // so, how long at most could a substring containing 1 letter fit the requirement?
+        // then, how long ... 2 letters fit?
+        // ...3 letters fit?
+        // ...26 letters fit?
+        
+        // for each # letter, we can get many substrings, get a longest one.
+        // for each letter, we get a winner substring, get the longest one.
+        // as you can see, there can be pretttty many candidate substrings.
+        
+        // we need a bi-pointer method, one pointing to start of one possibility,
+        // one pointing to the end of one possibility
+        
+        // move tail until we find more than #, 
+        // then move head until all previous letters are eliminated
+        // for(26) -> tail(s.length()) && head(s.length) time complexity -> O(26*2n) -> O(N)
+        // seems not too brute
+        
+        int head, tail, max = 0, unique, curLen, idx;
+        int[] counts = new int[26];
+        
+        for(int i = 1; i <= 26; i++) {
+            head = 0;
+            tail = 0;
+            unique = 0;
+            while(tail < s.length()) {
+                if(unique <= i) {
+                    // unique no more than i, move on
+                    idx = s.charAt(tail) - 'a';
+                    if(counts[idx] == 0) {
+                        counts[idx]++;
+                    }
+                }
+            }
+        }
