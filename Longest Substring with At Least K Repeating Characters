@@ -1,6 +1,6 @@
 // head scratching problem (395)
-
-// we need a very brute force method to solve this
+        
+        // we need a very brute force method to solve this
         // idea is a substring may have at most 26 different letters
         // so, how long at most could a substring containing 1 letter fit the requirement?
         // then, how long ... 2 letters fit?
@@ -26,13 +26,64 @@
             head = 0;
             tail = 0;
             unique = 0;
+            curLen = 0;
             while(tail < s.length()) {
                 if(unique <= i) {
                     // unique no more than i, move on
                     idx = s.charAt(tail) - 'a';
                     if(counts[idx] == 0) {
-                        counts[idx]++;
+                        unique++;
                     }
+                    counts[idx]++;
+                    if(counts[idx] == k) {
+                        // why == not >=?
+                        // because we want to denote this ONLY ONCE
+                        curLen++;
+                        // what's curLen standing for?
+                        // currently, how many letters inside unique[] fit the demand?
+                        // like abb, k=2
+                        // unique = 2, curLen = 1, for only b fits
+                    }
+                    // unique is no more than i, we can let tail move on
+                    tail++;
+                } else {
+                    // hold on, now unique is larger than we want, we need to move the head
+                    // where's the end?
+                    // until we eliminate one
+                    idx = s.charAt(head) - 'a';
+                    if(counts[idx] == k) {
+                        curLen--;
+                        // wtf is this doing?
+                        // it's removing qualified letter
+                        // aaabb, when facing b, eleminating all a,
+                        // 3->2, then cur - 1
+                        // twising
+                    }
+                    counts[idx]--;
+                    // why is this? why kill everyone?
+                    // because we need to find the new head,
+                    // so everyone prior to new head is no longer needed
+                    // cold blooded
+                    if(counts[idx] == 0) {
+                        unique--;
+                        // okay, now we kill this letter for good
+                    }
+                    head++;
                 }
+                
+                // until now, what do we have?
+                // head points to a candidate's head of i's different letters
+                // tail points to a candidate's tail of i's different letters, 
+                // but may not end completely, still have the possibility of increasing
+                // we need to analyse this candidate
+                
+                if(unique == i && unique == curLen) {
+                    // if candidate have exactly i's different letters, 
+                    // and all letters fit the demand
+                    // we say this candidate is qualified
+                    max = Math.max(tail - head, max);
+                }
+                
             }
         }
+        return max;
