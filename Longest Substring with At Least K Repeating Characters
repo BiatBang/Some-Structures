@@ -23,6 +23,7 @@
         int[] counts = new int[26];
         
         for(int i = 1; i <= 26; i++) {
+            Arrays.fill(counts, 0);
             head = 0;
             tail = 0;
             unique = 0;
