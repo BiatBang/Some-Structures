@@ -1,0 +1,92 @@
+// Trie is used to store a word letter by letter as a tree.
+// finally, the words display like a dictionary, abandon, a-b-a-n-d-o-n
+// besides, a figure can be displayed as digit by digit
+// each word has only one end and each end node should correspond to only one word.
+// why? no why.
+
+public class TrieNode {
+    // say b, b should has an <a> as a node, which contains some other nodes
+    private String content;
+    private HashMap<Character, TrieNode> children;
+    // say if this letter can be an end of a word
+    private boolean endOfWord;
+    
+    // getters and setters ...
+    
+    public void setEnd(boolean isEnd) {
+        this.isEnd = isEnd;
+    }
+    
+    public boolean isEnd() {
+        return this.endOfWord;
+    }
+}
+
+public class Trie {
+    private TrieNode root;
+    
+    // what can a trie do? insert, find, delete basically
+    
+    // let's start from insert:
+    public void insert(String word) {
+        TrieNode cur = root;
+        for(int i = 0; i < word.length(); i++) {
+            // computeIfAbsent is a function in HashMap, return the computed new value or null if key existed.
+            cur = cur.getChildren().computeIfAbsent(word.charAt(i), ch -> new TrieNode());
+        }
+        cur.setEnd(true);
+    }
+    
+    // find if a word existed
+    public boolean find(String word) {
+        TrieNode cur = root;
+        for(int i = 0; i < word.length(); i++) {
+            // just find the word letter by letter
+            if(cur.getChildren.containsKey(word.charAt(i))) {
+                cur = cur.getChildren.get(word.charAt(i);
+            } else return false;
+        }
+        return cur.isEnd();
+    }
+    
+    // delete a word
+    public void delete(String word) {
+        // this is complex because the word may be a part of other words
+        // only delete the letters who don't belong to any other word
+        // and set this end ass false
+        // how to decide if I'm useless?
+        // all my descendants have only one child and the end has no children, besides, I'm not another word's end.
+        // so this is a dfs, if my descendant has children, then I'm still useful after this delete
+        delete(root, word, 0);
+        // this index represent the depth of word, root has no content, so depth of a n-length word has a n+1 depth
+    }
+    
+    // a delete for dfs
+    public boolean delete(TrieNode node, String word, int index) {
+        if(index == word.length()) {
+            if(!node.isEnd()) {
+                // this is not a word, invalid delete
+                return false;
+            }
+            node.setEnd(false);
+            // here, it's the end of the word, what about it still has children?
+            return node.getChildren().isEmpty();
+        }
+        
+        // then I'll check if I'm deletable
+        if(node.getChildren.containsKey(word.charAt(i))) {
+            node = node.getChildren.get(word.charAt(i);
+        } else return false;
+        
+        // if I'm not the end of the word, check if I'm good to delete
+        boolean canBeDeleted = delete(node, word, index+1) && !node.isEnd();
+        
+        if(canBeDeleted) {
+            node.getChildren().remove(word.charAt(i));
+            // ok my child is deleted, what about me?
+            return node.getChildren().isEmpty();
+        }
+        
+        return false;
+    }
+}
