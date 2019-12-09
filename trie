@@ -74,8 +74,9 @@ public class Trie {
         }
         
         // then I'll check if I'm deletable
-        if(node.getChildren.containsKey(word.charAt(i))) {
-            node = node.getChildren.get(word.charAt(i);
+        String ch = String.valueOf(word.charAt(index));
+        if(node.getChildren().containsKey(ch)) {
+            node = node.getChildren().get(ch);
         } else return false;
         
         // if I'm not the end of the word, check if I'm good to delete
