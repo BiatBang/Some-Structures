@@ -1,0 +1,201 @@
+public static final int RED = 1;
+public static final int BLACK = 2;
+
+public static class RBTree {
+    /*
+    let's start from features of red-black tree:
+    1. every node has a color
+    2. root is black
+    3. no 2 red adjacent nodes
+    4. each path from one node has the same number of black nodes
+
+    the rotation condition is the same as AVL Tree,
+    left's left -> right rotate
+    left's right -> left son, right rotate
+    right's left -> right son, left rotate
+    right's right -> left rotate
+
+    the difference is in color
+    insert into right place and color it red, then:
+    1. if insert into root, give it black
+    2. if parent is black, it's done
+    3. if parent is red, then:
+        1.1 if uncle is red:
+            color parent and color black;
+            color grandparent red;
+            let x = grandparent;
+        1.2 if uncle is black:
+            1.2.1 & 1.2.2 left's left || right's right:
+                color parent black, grand red
+                rotate grand
+            1.2.3 & 1.2.4 left's right || right's left:
+                color self black, grand red
+                rotate parent then rotate grand
+     */
+
+    public class TreeNode {
+        int val;
+        int color;
+        TreeNode left, right, parent;
+
+        public TreeNode(int val) {
+            this.val = val;
+            this.color = RED;
+            this.left = null;
+            this.right = null;
+            this.parent = null;
+        }
+
+        public void setColor(int color) {
+            this.color = color;
+        }
+
+        public boolean isRed() {
+            return this.color == RED;
+        }
+    }
+
+    private TreeNode root;
+
+    public TreeNode getParent(TreeNode node) {
+        if(node != null) return node.parent;
+        return null;
+    }
+
+    public RBTree() {root = null;}
+
+    public boolean isRed(TreeNode node){
+        return node == null ? false : node.isRed();
+    }
+
+    public void insert(int val) {
+        TreeNode ins = insert(root, val);
+        arrange(ins);
+        setColor(root, BLACK);
+    }
+
+    public void arrange(TreeNode node) {
+        TreeNode parent, grand, uncle;
+        while(true) {
+            parent = getParent(node);
+            grand = getParent(parent);
+            if(parent == null || grand == null) break;
+            if(!isRed(parent)) {
+                break;
+            }
+            if(isRed(parent)) {
+                if(grand.left == parent) uncle = grand.right;
+                else uncle = grand.left;
+                if(isRed(uncle)) {
+                    setColor(parent, BLACK);
+                    setColor(uncle, BLACK);
+                    setColor(grand, RED);
+                    node = grand;
+                    continue;
+                } else {
+                    if(grand.left == parent && parent.left == node) {
+                        setColor(parent, BLACK);
+                        setColor(grand, RED);
+                        rightRotate(grand);
+                    } else if(grand.left == parent && parent.right == node) {
+                        setColor(node, BLACK);
+                        setColor(grand, RED);
+                        leftRotate(parent);
+                        rightRotate(grand);
+                    } else if(grand.right == parent && parent.left == node) {
+                        setColor(node, BLACK);
+                        setColor(grand, RED);
+                        rightRotate(parent);
+                        leftRotate(grand);
+                    } else if(grand.right == parent && parent.right == node) {
+                        setColor(parent, BLACK);
+                        setColor(grand, RED);
+                        leftRotate(grand);
+                    }
+                }
+            }
+        }
+        TreeNode r = node;
+        while(r.parent != null) r = r.parent;
+        this.root = r;
+    }
+
+    public void setColor(TreeNode node, int color) {
+        if(node != null) node.setColor(color);
+    }
+
+    public TreeNode insert(TreeNode node, int val) {
+        // gotta find a way to know who's my grandparent
+        TreeNode cur = this.root;
+        TreeNode parent = this.root;
+        if(cur == null) {
+            this.root = new TreeNode(val);
+            return this.root;
+        }
+        while(cur != null) {
+            parent = cur;
+            if(val < cur.val) {
+                cur = cur.left;
+            } else if(val > cur.val) {
+                cur = cur.right;
+            } else return cur;
+        }
+
+        if(val < parent.val) {
+            parent.left = new TreeNode(val);
+            parent.left.parent = parent;
+            return parent.left;
+        } else if(val > parent.val) {
+            parent.right = new TreeNode(val);
+            parent.right.parent = parent;
+            return parent.right;
+        }
+        return cur;
+    }
+
+    public TreeNode leftRotate(TreeNode node) {
+        if(node == null) return node;
+        TreeNode right = node.right;
+        TreeNode rl = right.left;
+        right.parent = node.parent;
+        if(node.parent != null) {
+            if(node == node.parent.left) node.parent.left = right;
+            else if(node == node.parent.right) node.parent.right = right;
+        }
+        node.right = rl;
+        right.left = node;
+        if(rl != null) rl.parent = node;
+        node.parent = right;
+        return right;
+    }
+
+    public TreeNode rightRotate(TreeNode node) {
+        if(node == null) return node;
+        TreeNode left = node.left;
+        TreeNode lr = left.right;
+        left.parent = node.parent;
+        if(node.parent != null) {
+            if(node == node.parent.left) node.parent.left = left;
+            else if(node == node.parent.right) node.parent.right = left;
+        }
+        node.left = lr;
+        left.right = node;
+        if(lr != null) lr.parent = node;
+        node.parent = left;
+        return left;
+    }
+
+    public void print() {
+        print(this.root);
+    }
+
+    public void print(TreeNode node) {
+        if(node == null) {
+            System.out.println("---");
+            return;
+        }
+        print(node.left);
+        System.out.println(node.val + ", color: " + (node.isRed() ? "red" : "black"));
+        print(node.right);
+    }
+}
